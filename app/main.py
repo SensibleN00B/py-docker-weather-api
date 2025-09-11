@@ -21,8 +21,8 @@ def get_weather() -> None:
     ).json()
 
     location = (
-        f"{weather_data["location"]["name"]}"
-        f"/{weather_data["location"]["country"]}"
+        f'{weather_data["location"]["name"]}'
+        f'/{weather_data["location"]["country"]}'
     )
     date = weather_data["current"]["last_updated"]
     temp_c = weather_data["current"]["temp_c"]

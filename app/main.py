@@ -1,4 +1,6 @@
 import os
+import sys
+
 import requests
 from dotenv import load_dotenv
 
@@ -10,15 +12,22 @@ API_KEY = os.getenv("API_KEY")
 
 def get_weather() -> None:
     if not API_KEY:
-        raise ValueError("API_KEY is missing.")
-    weather_data = requests.get(
-        url=URL,
-        params={
-            "key": API_KEY,
-            "q": FILTERING,
-            "lang": "en"
-        }
-    ).json()
+        print("❌ Environment variable API_KEY is missing.")
+        sys.exit(1)
+    try:
+        response = requests.get(
+            URL,
+            params={"key": API_KEY, "q": FILTERING, "lang": "en"},
+            timeout=10,
+        )
+        response.raise_for_status()
+        weather_data = response.json()
+    except requests.exceptions.RequestException as error:
+        print(f"❌ HTTP request failed: {error}")
+        sys.exit(1)
+    except ValueError as error:
+        print(f"❌ Invalid JSON in response: {error}")
+        sys.exit(1)
 
     location = (
         f'{weather_data["location"]["name"]}'
